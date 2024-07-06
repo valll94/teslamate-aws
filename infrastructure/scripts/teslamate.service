@@ -1,0 +1,21 @@
+[Unit]
+Description=Docker Compose Application Service
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+WorkingDirectory=/home/ubuntu
+ExecStartPre=/usr/bin/docker compose -f /home/ubuntu/docker-compose.yml down
+ExecStart=/usr/bin/docker compose -f /home/ubuntu/docker-compose.yml up
+ExecStop=/usr/bin/docker compose -f /home/ubuntu/docker-compose.yml down
+ExecStopPost=/bin/rm -f /var/run/docker-compose-app.pid
+PIDFile=/var/run/docker-compose-app.pid
+User=ubuntu
+Group=docker
+StandardOutput=journal
+StandardError=journal
+TimeoutStartSec=0
+
+[Install]
+WantedBy=multi-user.target

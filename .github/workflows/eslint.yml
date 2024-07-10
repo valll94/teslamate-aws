@@ -40,7 +40,10 @@ jobs:
 
       - name: Run Checkov
         run: |
+          DEFAULT_PATH=$(pwd)
           npm install
+          export PATH=$PATH:$DEFAULT_PATH/node_modules/aws-cdk/bin
+          pip3 install checkov          
           cdk synth TeslaMateInfrastructureStack 
           checkov -d infrastructure/cdk.out --quiet --compact --framework cloudformation --output-file checkov-results.sarif --output sarif
 

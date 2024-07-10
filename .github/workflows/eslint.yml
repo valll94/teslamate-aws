@@ -40,6 +40,7 @@ jobs:
 
       - name: Run Checkov
         run: |
+          pwd
           checkov -d infrastructure/cdk.out --quiet --compact --framework cloudformation --output-file checkov-results.sarif --output sarif
 
       - name: Show Checkov Results

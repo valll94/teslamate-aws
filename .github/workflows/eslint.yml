@@ -40,7 +40,8 @@ jobs:
 
       - name: Run Checkov
         run: |
-          pwd
+          npm install
+          cdk synth TeslaMateInfrastructureStack 
           checkov -d infrastructure/cdk.out --quiet --compact --framework cloudformation --output-file checkov-results.sarif --output sarif
 
       - name: Show Checkov Results

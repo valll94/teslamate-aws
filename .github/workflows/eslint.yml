@@ -40,6 +40,7 @@ jobs:
 
       - name: Run Checkov
         run: |
+          cd infrastructure/
           DEFAULT_PATH=$(pwd)
           npm install
           export PATH=$PATH:$DEFAULT_PATH/node_modules/aws-cdk/bin

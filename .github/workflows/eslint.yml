@@ -1,22 +1,23 @@
-name: ESLint
+name: Code Quality and Security Scan
 
 on:
   push:
   pull_request:
 
 jobs:
-  eslint:
-    name: Run eslint scanning
+  scan:
+    name: Run ESLint and Checkov scanning
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
-      actions: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install ESLint
+      - name: Install Node.js and ESLint
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install ESLint and SARIF formatter
         run: |
           npm install eslint@8.10.0
           npm install @microsoft/eslint-formatter-sarif@2.1.7
@@ -30,11 +31,24 @@ jobs:
           --output-file eslint-results.sarif || echo "ESLint run failed"
         continue-on-error: true
 
-      - name: List SARIF files
-        run: ls -la eslint-results.sarif
+      - name: Show ESLint Results
+        run: cat eslint-results.sarif || echo "No ESLint results"
+
+      - name: Install Checkov
+        run: |
+          pip install checkov
+
+      - name: Run Checkov
+        run: |
+          checkov --directory . --output-file checkov-results.sarif
+
+      - name: Show Checkov Results
+        run: cat checkov-results.sarif || echo "No Checkov results"
 
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: eslint-results.sarif
+          sarif_file: |
+            eslint-results.sarif
+            checkov-results.sarif
           wait-for-processing: true

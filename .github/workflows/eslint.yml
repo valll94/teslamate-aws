@@ -39,6 +39,8 @@ jobs:
           pip install checkov
 
       - name: Run Checkov
+        env:
+          CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
         run: |
           cd infrastructure/
           DEFAULT_PATH=$(pwd)

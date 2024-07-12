@@ -41,6 +41,7 @@ jobs:
       - name: Run Checkov
         env:
           CDK_DEFAULT_ACCOUNT: ${{ secrets.AWS_ACCOUNT_ID }}
+          CDK_DEFAULT_REGION: ${{ secrets.CDK_DEFAULT_REGION }}
         run: |
           cd infrastructure/
           DEFAULT_PATH=$(pwd)

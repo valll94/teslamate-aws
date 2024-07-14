@@ -44,7 +44,7 @@ jobs:
           DEFAULT_PATH=$(pwd)
           npm install
           export PATH=$PATH:$DEFAULT_PATH/node_modules/aws-cdk/bin
-          cdk synth TeslaMateInfrastructureStack 
+          cdk synth TeslaMateInfrastructureStack -q
 
       - name: Set up Python 3.8
         uses: actions/setup-python@v4
@@ -64,6 +64,9 @@ jobs:
       - name: Test
         run: |
           pwd
+          ls -lah
+          ls -lah reports/
+          ls -lah reports/results.sarif
 
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2

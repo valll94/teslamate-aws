@@ -48,7 +48,6 @@ jobs:
           DEFAULT_PATH=$(pwd)
           npm install
           export PATH=$PATH:$DEFAULT_PATH/node_modules/aws-cdk/bin
-          pip3 install checkov          
           cdk synth TeslaMateInfrastructureStack 
 
       - uses: actions/checkout@v2
@@ -60,7 +59,7 @@ jobs:
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
-          directory: cdk.out/
+          directory: infrastructure/cdk.out/
           framework: cloudformation 
           quiet: true
           soft_fail: true

@@ -53,12 +53,12 @@ jobs:
           checkov -d cdk.out --quiet --compact --framework cloudformation --output-file checkov-results.sarif --output sarif -s
 
       - name: Show Checkov Results
-        run: cat infrastructure/checkov-results.sarif || echo "No Checkov results"
+        run: pwd && ls -lah && cat infrastructure/checkov-results.sarif/results_sarif.sarif || echo "No Checkov results"
 
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v2
         with:
           sarif_file: |
             eslint-results.sarif
-            infrastructure/checkov-results.sarif
+            infrastructure/checkov-results.sarif/results_sarif.sarif
           wait-for-processing: true

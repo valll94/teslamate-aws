@@ -34,11 +34,7 @@ jobs:
       - name: Show ESLint Results
         run: cat eslint-results.sarif || echo "No ESLint results"
 
-      - name: Install Checkov
-        run: |
-          pip install checkov
-
-      - name: Run Checkov
+      - name: Run CDK synth
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -63,6 +59,11 @@ jobs:
           soft_fail: true
           output_format: sarif
           output_file_path: reports/results.sarif
+
+
+      - name: Test
+        run: |
+          pwd
 
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2

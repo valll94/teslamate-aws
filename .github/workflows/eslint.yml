@@ -50,7 +50,6 @@ jobs:
           export PATH=$PATH:$DEFAULT_PATH/node_modules/aws-cdk/bin
           cdk synth TeslaMateInfrastructureStack 
 
-      - uses: actions/checkout@v2
       - name: Set up Python 3.8
         uses: actions/setup-python@v4
         with:
@@ -59,7 +58,6 @@ jobs:
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
-          directory: infrastructure/cdk.out/
           framework: cloudformation 
           quiet: true
           soft_fail: true

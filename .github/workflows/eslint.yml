@@ -50,7 +50,7 @@ jobs:
           export PATH=$PATH:$DEFAULT_PATH/node_modules/aws-cdk/bin
           pip3 install checkov          
           cdk synth TeslaMateInfrastructureStack 
-          checkov -d infrastructure/cdk.out --quiet --compact --framework cloudformation --output-file checkov-results.sarif --output sarif
+          checkov -d cdk.out --quiet --compact --framework cloudformation --output-file checkov-results.sarif --output sarif
 
       - name: Show Checkov Results
         run: cat checkov-results.sarif || echo "No Checkov results"

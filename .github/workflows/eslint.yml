@@ -72,5 +72,4 @@ jobs:
         with:
           sarif_file: |
             infrastructure/report/results.sarif
-            eslint-results.sarif
           wait-for-processing: true

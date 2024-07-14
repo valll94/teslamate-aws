@@ -50,10 +50,25 @@ jobs:
           export PATH=$PATH:$DEFAULT_PATH/node_modules/aws-cdk/bin
           pip3 install checkov          
           cdk synth TeslaMateInfrastructureStack 
-          checkov -d cdk.out --quiet --compact --framework cloudformation --output-file checkov-results.sarif --output sarif -s
+
+      - uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+      - name: Test with Checkov
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: cdk.out/
+          framework: cloudformation 
+          quiet: true
+          soft_fail: true
+          output_format: sarif
+          output_file_path: reports/results.sarif
 
       - name: Show Checkov Results
-        run: pwd && ls -lah && cat infrastructure/checkov-results.sarif/results_sarif.sarif || echo "No Checkov results"
+        run: pwd && ls -lah && cat infrastructure/report/results.sarif || echo "No Checkov results"
 
       - name: Upload analysis results to GitHub
         uses: github/codeql-action/upload-sarif@v2

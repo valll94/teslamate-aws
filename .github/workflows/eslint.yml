@@ -59,17 +59,3 @@ jobs:
           soft_fail: true
           output_format: sarif
           output_file_path: reports/results.sarif
-
-
-      - name: Test
-        run: |
-          pwd
-          ls -lah
-          ls -lah reports/
-          ls -lah reports/results.sarif
-
-      - name: Upload SARIF file
-        uses: github/codeql-action/upload-sarif@v2
-        if: success() || failure()
-        with:
-          sarif_file: eslint-results.sarif

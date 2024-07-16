@@ -64,10 +64,12 @@ export class InfrastructureStack extends cdk.Stack {
     });
 
     // Find the latest Ubuntu AMI
-    const ubuntuAmi = new ec2.LookupMachineImage({
-      name: 'ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*',
-      owners: ['099720109477'], // Canonical's AWS account ID
-    });
+    //const ubuntuAmi = new ec2.LookupMachineImage({
+    //  name: 'ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*',
+    //  owners: ['099720109477'], // Canonical's AWS account ID
+    //});
+
+    const ubuntuAmiId = 'ami-0a49b025fffbbdac6';
 
     const role = new iam.Role(this, 'TeslaMateInstanceSSMRole', {
       assumedBy: new iam.ServicePrincipal('ec2.amazonaws.com'),
@@ -79,7 +81,9 @@ export class InfrastructureStack extends cdk.Stack {
     const instance = new ec2.Instance(this, 'TeslaMateInstance', {
       vpc: vpc,
       instanceType: ec2.InstanceType.of(ec2.InstanceClass.T3A, ec2.InstanceSize.SMALL),
-      machineImage: ubuntuAmi,
+      machineImage: ec2.MachineImage.genericLinux({
+        'eu-central-1': ubuntuAmiId,
+      }),
       securityGroup,
       role,
       vpcSubnets: { subnetType: ec2.SubnetType.PUBLIC },

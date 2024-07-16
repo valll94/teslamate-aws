@@ -1,0 +1,61 @@
+name: Code Quality and Security Scan
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  scan:
+    name: Run ESLint and Checkov scanning
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Node.js and ESLint
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      - name: Install ESLint and SARIF formatter
+        run: |
+          npm install eslint@8.10.0
+          npm install @microsoft/eslint-formatter-sarif@2.1.7
+
+      - name: Run ESLint
+        run: |
+          npx eslint . \
+          --config .eslintrc.js \
+          --ext .js,.jsx,.ts,.tsx \
+          --format @microsoft/eslint-formatter-sarif \
+          --output-file eslint-results.sarif || echo "ESLint run failed"
+        continue-on-error: true
+
+      - name: Show ESLint Results
+        run: cat eslint-results.sarif || echo "No ESLint results"
+
+      - name: Run CDK synth
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_DEFAULT_REGION }}
+        run: |
+          cd infrastructure/
+          DEFAULT_PATH=$(pwd)
+          npm install
+          export PATH=$PATH:$DEFAULT_PATH/node_modules/aws-cdk/bin
+          cdk synth TeslaMateInfrastructureStack -q
+
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.8
+      - name: Test with Checkov
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          framework: cloudformation 
+          quiet: true
+          soft_fail: true
+          output_format: sarif
+          output_file_path: reports/results.sarif
